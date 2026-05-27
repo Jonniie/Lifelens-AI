@@ -646,12 +646,12 @@ export default function App() {
           </div>
 
           {/* Right: Status */}
-          <div className="flex items-center gap-1.5 ml-auto shrink-0">
-            <div className="w-1.5 h-1.5 rounded-full" style={{
+          <div className="flex items-center gap-2 ml-auto shrink-0">
+            <div className="w-2 h-2 rounded-full self-center" style={{
               background: backendStatus === 'online' ? 'var(--palm)' : backendStatus === 'degraded' ? 'var(--gold)' : 'var(--terracotta)',
               boxShadow: backendStatus === 'online' ? '0 0 6px var(--palm-glow)' : backendStatus === 'degraded' ? '0 0 6px var(--gold-glow)' : '0 0 6px var(--terracotta-glow)',
             }} />
-            <span className="font-mono text-xs uppercase tracking-wider" style={{ color: 'var(--sand-dim)' }}>
+            <span className="font-mono text-xs uppercase tracking-wider leading-none self-center" style={{ color: 'var(--sand-dim)' }}>
               {backendStatus === 'online' ? 'Online' : backendStatus === 'degraded' ? 'Degraded' : backendStatus === 'checking' ? 'Checking…' : 'Offline'}
             </span>
           </div>
