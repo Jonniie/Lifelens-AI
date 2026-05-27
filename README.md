@@ -14,8 +14,6 @@ LifeLens AI is an end-to-end web application that predicts diabetes risk from pa
 - **Lifestyle Grade** — A–F score based on habits, diet, and activity
 - **Nigerian Context** — Local income tiers (₦), education levels, food references, and healthcare system terms
 - **Accessibility-First** — Large readable fonts, high-contrast palette, tooltips on every control
-- **Report Export** — One-click PNG download of the full results dashboard
-- **Responsive** — Mobile-first layout with Tailwind breakpoints
 
 ---
 
