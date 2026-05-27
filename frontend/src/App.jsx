@@ -503,13 +503,13 @@ export default function App() {
           <Card className="flex items-center gap-3">
             <Gauge pct={result.risk_percentage} color={meta.color} />
             <div className="flex-1 min-w-0">
-              <span className="font-display text-xl" style={{ color: meta.color, lineHeight: 1.1 }}>{meta.word}</span>
-              <p className="font-body text-sm mt-0.5 leading-snug" style={{ color: 'var(--sand-dim)' }}>{result.action}</p>
+              <span className="font-display text-2xl" style={{ color: meta.color, lineHeight: 1.1 }}>{meta.word}</span>
+              <p className="font-body text-base mt-1 leading-snug" style={{ color: 'var(--sand-dim)' }}>{result.action}</p>
             </div>
           </Card>
 
-          <Card className="flex items-center gap-3">
-            <div className="font-mono text-4xl font-medium shrink-0"
+          <Card className="flex items-center gap-4">
+            <div className="font-mono text-5xl font-medium shrink-0"
               style={{
                 color: result.lifestyle.grade === 'A' ? 'var(--palm)' :
                        result.lifestyle.grade === 'F' ? 'var(--crimson)' : 'var(--gold)',
@@ -519,19 +519,19 @@ export default function App() {
               {result.lifestyle.grade}
             </div>
             <div>
-              <div className="font-mono text-base" style={{ color: 'var(--sand)' }}>
-                {result.lifestyle.score}<span className="text-sm ml-1" style={{ color: 'var(--sand-dim)' }}>/ 100</span>
+              <div className="font-mono text-lg" style={{ color: 'var(--sand)' }}>
+                {result.lifestyle.score}<span className="text-base ml-1" style={{ color: 'var(--sand-dim)' }}>/ 100</span>
               </div>
-              <span className="font-body text-xs" style={{ color: 'var(--sand-dim)' }}>Lifestyle Score</span>
+              <span className="font-body text-sm" style={{ color: 'var(--sand-dim)' }}>Lifestyle Score</span>
             </div>
           </Card>
 
           <Card className="flex-1">
-            <div className="flex items-baseline gap-2 mb-1.5">
+            <div className="flex items-baseline gap-2 mb-2">
               <div className="h-px w-3" style={{ background: 'var(--ochre)' }} />
-              <span className="font-mono text-xs uppercase tracking-wider" style={{ color: 'var(--ochre)' }}>Clinical Snapshot</span>
+              <span className="font-mono text-sm uppercase tracking-wider" style={{ color: 'var(--ochre)' }}>Clinical Snapshot</span>
             </div>
-            <div className="space-y-0.5 text-sm">
+            <div className="space-y-1 text-base">
               {[
                 ['Comorbidity Score', result.feature_vector[25], 'var(--sand)'],
                 ['BMI Class', result.feature_vector[24] ? 'Severely Obese' : result.feature_vector[21] ? 'Obese' : result.feature_vector[22] ? 'Overweight' : 'Normal',
@@ -554,12 +554,12 @@ export default function App() {
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
             <div className="flex items-baseline gap-2">
               <div className="h-px w-4" style={{ background: 'var(--ochre)' }} />
-              <span className="font-mono text-xs uppercase tracking-wider" style={{ color: 'var(--ochre)' }}>Interventions</span>
-              <span className="font-mono text-xs" style={{ color: 'var(--sand-dim)' }}>{result.recommendations.length} flagged</span>
+              <span className="font-mono text-sm uppercase tracking-wider" style={{ color: 'var(--ochre)' }}>Interventions</span>
+              <span className="font-mono text-sm" style={{ color: 'var(--sand-dim)' }}>{result.recommendations.length} flagged</span>
             </div>
-            <button onClick={downloadReport} className="font-mono text-xs uppercase px-3 py-1.5 rounded-sm transition-all flex items-center gap-1.5 shrink-0"
+            <button onClick={downloadReport} className="font-mono text-sm uppercase px-4 py-2 rounded-sm transition-all flex items-center gap-2 shrink-0"
               style={{ background: 'var(--ochre)', color: 'var(--earth-deep)', border: '1px solid var(--ochre)' }}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
               </svg>
               Save Report
@@ -568,30 +568,30 @@ export default function App() {
 
           {result.recommendations.length === 0 ? (
             <Card className="flex-1 flex items-center justify-center">
-              <span className="font-display text-xl" style={{ color: 'var(--palm)' }}>No interventions flagged</span>
+              <span className="font-display text-2xl" style={{ color: 'var(--palm)' }}>No interventions flagged</span>
             </Card>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-1.5">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
               {highRecs.map((rec, i) => (
-                <Card key={`h-${i}`} className="glow-high" style={{ padding: '0.5rem 0.6rem' }}>
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="font-mono text-xs uppercase tracking-wider px-1.5 py-0.5" style={{ background: 'rgba(184,74,47,0.15)', color: 'var(--terracotta)', borderRadius: '2px' }}>High</span>
-                    <span className="font-body text-xs" style={{ color: 'var(--sand-dim)' }}>{rec.category}</span>
+                <Card key={`h-${i}`} className="glow-high" style={{ padding: '0.75rem 1rem' }}>
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className="font-mono text-sm uppercase tracking-wider px-2 py-1" style={{ background: 'rgba(184,74,47,0.15)', color: 'var(--terracotta)', borderRadius: '3px' }}>High</span>
+                    <span className="font-body text-sm" style={{ color: 'var(--sand-dim)' }}>{rec.category}</span>
                   </div>
-                  <h4 className="font-display text-base mb-0.5" style={{ color: 'var(--sand)' }}>{rec.title}</h4>
-                  <p className="font-body text-sm leading-snug mb-1" style={{ color: 'var(--sand-dim)' }}>{rec.text}</p>
-                  <p className="font-body text-xs italic leading-snug pl-2 border-l border-[var(--terracotta)]" style={{ color: 'var(--sand-dim)', opacity: 0.7 }}>{rec.evidence}</p>
+                  <h4 className="font-display text-lg mb-1" style={{ color: 'var(--sand)' }}>{rec.title}</h4>
+                  <p className="font-body text-base leading-relaxed mb-2" style={{ color: 'var(--sand-dim)' }}>{rec.text}</p>
+                  <p className="font-body text-sm italic leading-snug pl-3 border-l-2 border-[var(--terracotta)]" style={{ color: 'var(--sand-dim)', opacity: 0.8 }}>{rec.evidence}</p>
                 </Card>
               ))}
               {medRecs.map((rec, i) => (
-                <Card key={`m-${i}`} className="glow-medium" style={{ padding: '0.5rem 0.6rem' }}>
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="font-mono text-xs uppercase tracking-wider px-1.5 py-0.5" style={{ background: 'rgba(212,168,67,0.12)', color: 'var(--gold)', borderRadius: '2px' }}>Medium</span>
-                    <span className="font-body text-xs" style={{ color: 'var(--sand-dim)' }}>{rec.category}</span>
+                <Card key={`m-${i}`} className="glow-medium" style={{ padding: '0.75rem 1rem' }}>
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className="font-mono text-sm uppercase tracking-wider px-2 py-1" style={{ background: 'rgba(212,168,67,0.12)', color: 'var(--gold)', borderRadius: '3px' }}>Medium</span>
+                    <span className="font-body text-sm" style={{ color: 'var(--sand-dim)' }}>{rec.category}</span>
                   </div>
-                  <h4 className="font-display text-base mb-0.5" style={{ color: 'var(--sand)' }}>{rec.title}</h4>
-                  <p className="font-body text-sm leading-snug mb-1" style={{ color: 'var(--sand-dim)' }}>{rec.text}</p>
-                  <p className="font-body text-xs italic leading-snug pl-2 border-l border-[var(--gold)]" style={{ color: 'var(--sand-dim)', opacity: 0.7 }}>{rec.evidence}</p>
+                  <h4 className="font-display text-lg mb-1" style={{ color: 'var(--sand)' }}>{rec.title}</h4>
+                  <p className="font-body text-base leading-relaxed mb-2" style={{ color: 'var(--sand-dim)' }}>{rec.text}</p>
+                  <p className="font-body text-sm italic leading-snug pl-3 border-l-2 border-[var(--gold)]" style={{ color: 'var(--sand-dim)', opacity: 0.8 }}>{rec.evidence}</p>
                 </Card>
               ))}
             </div>
