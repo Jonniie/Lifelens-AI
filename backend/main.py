@@ -104,7 +104,7 @@ class PatientMetrics(BaseModel):
 # ─────────────────────────────────────────────
 def engineer_features(raw: dict) -> pd.DataFrame:
     """
-    Computes 21 raw + 16 engineered features and returns a pandas DataFrame
+    Computes 21 raw + 18 engineered features and returns a pandas DataFrame
     with columns reindexed to exactly match `all_features` from config.
     """
     df_raw = pd.DataFrame([raw])
