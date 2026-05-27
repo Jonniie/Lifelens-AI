@@ -214,6 +214,33 @@ export default function App() {
     AnyHealthcare: 1, NoDocbcCost: 0,
   });
 
+  // ── Backend Health Status ──
+  const [backendStatus, setBackendStatus] = useState('checking');
+
+  useEffect(() => {
+    const API_BASE = 'https://lifelens-ai-2it2.onrender.com';
+    const checkHealth = async () => {
+      try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 8000);
+        const res = await fetch(`${API_BASE}/health`, { signal: controller.signal });
+        clearTimeout(timeout);
+        if (res.ok) {
+          const data = await res.json();
+          setBackendStatus(data.model_loaded ? 'online' : 'degraded');
+        } else {
+          setBackendStatus('offline');
+        }
+      } catch {
+        setBackendStatus('offline');
+      }
+    };
+
+    checkHealth();
+    const id = setInterval(checkHealth, 15000);
+    return () => clearInterval(id);
+  }, []);
+
   const weightLb = useMemo(() => {
     return weightUnit === 'kg' ? form.WeightKg * 2.20462 : form.WeightKg;
   }, [form.WeightKg, weightUnit]);
@@ -620,8 +647,13 @@ export default function App() {
 
           {/* Right: Status */}
           <div className="flex items-center gap-1.5 ml-auto shrink-0">
-            <div className="w-1.5 h-1.5 rounded-full" style={{ background: 'var(--palm)', boxShadow: '0 0 6px var(--palm-glow)' }} />
-            <span className="font-mono text-xs uppercase tracking-wider" style={{ color: 'var(--sand-dim)' }}>Active</span>
+            <div className="w-1.5 h-1.5 rounded-full" style={{
+              background: backendStatus === 'online' ? 'var(--palm)' : backendStatus === 'degraded' ? 'var(--gold)' : 'var(--terracotta)',
+              boxShadow: backendStatus === 'online' ? '0 0 6px var(--palm-glow)' : backendStatus === 'degraded' ? '0 0 6px var(--gold-glow)' : '0 0 6px var(--terracotta-glow)',
+            }} />
+            <span className="font-mono text-xs uppercase tracking-wider" style={{ color: 'var(--sand-dim)' }}>
+              {backendStatus === 'online' ? 'Online' : backendStatus === 'degraded' ? 'Degraded' : backendStatus === 'checking' ? 'Checking…' : 'Offline'}
+            </span>
           </div>
         </div>
       </header>
