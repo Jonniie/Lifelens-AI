@@ -197,6 +197,7 @@ const Card = ({ children, className = '', style = {} }) => (
 
 // ── Main App ──
 export default function App() {
+  const [view, setView] = useState('landing');
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
@@ -628,6 +629,55 @@ export default function App() {
     );
   };
 
+  // ── Landing Page ──
+  const LandingPage = () => (
+    <div className="flex-1 flex flex-col justify-center items-center text-center px-4 py-8 gap-6 max-w-4xl mx-auto">
+      {/* Hero */}
+      <div className="space-y-4">
+        <h1 className="font-display text-4xl sm:text-5xl tracking-tight" style={{ color: 'var(--sand)' }}>
+          Know Your Diabetes Risk
+        </h1>
+        <p className="font-body text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed" style={{ color: 'var(--sand-dim)' }}>
+          A clinical-grade assessment built for Nigerians. Enter your health details, get a personalized risk score, and receive actionable lifestyle recommendations.
+        </p>
+      </div>
+
+      {/* Gauge Preview */}
+      <div className="flex flex-col items-center gap-2">
+        <Gauge pct={50} color={'var(--ochre)'} />
+        <span className="font-mono text-xs uppercase tracking-wider" style={{ color: 'var(--sand-dim)' }}>Sample Risk Output</span>
+      </div>
+
+      {/* CTA */}
+      <Btn onClick={() => { setStep(1); setResult(null); setError(null); setView('app'); }}>
+        Take Test →
+      </Btn>
+
+      {/* How It Works */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full mt-4">
+        {[
+          { title: 'Enter Details', desc: 'Age, weight, habits, and health history' },
+          { title: 'Get Assessed', desc: 'ML-powered risk score + lifestyle grade' },
+          { title: 'Take Action', desc: 'Personalized Nigerian-context recommendations' },
+        ].map((card, i) => (
+          <Card key={i} className="flex flex-col items-center text-center gap-2">
+            <div className="w-8 h-8 flex items-center justify-center font-mono text-sm"
+              style={{ borderRadius: '50%', border: '1px solid var(--ochre)', color: 'var(--ochre)' }}>
+              {String(i + 1)}
+            </div>
+            <h3 className="font-display text-lg" style={{ color: 'var(--sand)' }}>{card.title}</h3>
+            <p className="font-body text-sm" style={{ color: 'var(--sand-dim)' }}>{card.desc}</p>
+          </Card>
+        ))}
+      </div>
+
+      {/* Trust line */}
+      <p className="font-body text-xs max-w-xl" style={{ color: 'rgba(232,213,183,0.35)' }}>
+        Based on CDC BRFSS clinical data. Not a substitute for professional medical advice.
+      </p>
+    </div>
+  );
+
   return (
     <div className="min-h-screen h-screen flex flex-col relative overflow-hidden">
       <div className="atmosphere" />
@@ -636,9 +686,9 @@ export default function App() {
       <header className="relative z-10 border-b border-[rgba(232,213,183,0.06)] shrink-0">
         <div className="max-w-7xl mx-auto px-4 py-2 flex items-center relative">
           {/* Left: Logo */}
-          <div className="flex items-baseline gap-2 shrink-0">
+          <button onClick={() => setView('landing')} className="flex items-baseline gap-2 shrink-0 cursor-pointer hover:opacity-80 transition-opacity">
             <span className="font-display text-lg tracking-tight" style={{ color: 'var(--sand)' }}>LifeLens</span>
-          </div>
+          </button>
 
           {/* Center: Title (absolute on desktop, hidden on very small) */}
           <div className="absolute left-1/2 -translate-x-1/2 hidden sm:block">
@@ -661,70 +711,78 @@ export default function App() {
       {/* Main */}
       <main className="relative z-10 flex-1 min-h-0 flex flex-col px-3 sm:px-4 py-2 sm:py-3">
         <div className="max-w-7xl mx-auto w-full flex flex-col flex-1 min-h-0">
-          {/* Step Indicator */}
-          {step < 4 && (
-            <div className="flex items-center gap-0 mt-8 mb-4 sm:mb-6 shrink-0 mx-auto max-w-5xl">
-              {[1, 2, 3].map((s, i) => (
-                <React.Fragment key={s}>
-                  <button onClick={() => step > s && setStep(s)}
-                    className="flex flex-col items-center gap-1 px-3 py-1 transition-all"
-                    style={{ opacity: step >= s ? 1 : 0.35, cursor: step > s ? 'pointer' : 'default' }}>
-                    <div className="w-8 h-8 flex items-center justify-center font-mono text-sm"
-                      style={{
-                        borderRadius: '50%',
-                        border: step === s ? '2px solid var(--ochre)' : step > s ? '2px solid rgba(196,133,62,0.4)' : '2px solid rgba(232,213,183,0.1)',
-                        background: step === s ? 'rgba(196,133,62,0.15)' : 'transparent',
-                        color: step >= s ? 'var(--ochre)' : 'var(--sand-dim)',
-                        boxShadow: step === s ? '0 0 14px var(--ochre-glow)' : 'none',
-                      }}>
-                      {step > s ? '✓' : String(s)}
-                    </div>
-                    <span className="font-mono text-[10px] uppercase tracking-wider" style={{ color: step >= s ? 'var(--sand-dim)' : 'rgba(232,213,183,0.2)' }}>
-                      {s === 1 ? 'Identity' : s === 2 ? 'Lifestyle' : 'Review'}
-                    </span>
-                  </button>
-                  {s < 3 && (
-                    <div className="w-10 h-0.5 relative mx-1">
-                      <div className="absolute inset-0" style={{ background: 'rgba(232,213,183,0.08)' }} />
-                      <div className="absolute inset-0 origin-left transition-transform duration-500"
-                        style={{ background: 'var(--ochre)', transform: step > s ? 'scaleX(1)' : 'scaleX(0)', transitionTimingFunction: 'cubic-bezier(0.16,1,0.3,1)' }} />
-                    </div>
-                  )}
-                </React.Fragment>
-              ))}
-            </div>
-          )}
+          {/* Landing Page */}
+          {view === 'landing' && <LandingPage />}
 
-          {/* Content */}
-          <div className="flex-1 min-h-0 overflow-y-auto">
-            <div className="min-h-full flex items-center justify-center">
-              <div className={`w-full mx-auto ${step < 4 ? 'max-w-5xl' : 'max-w-7xl'}`}>
-                {step === 1 && <Step1 />}
-                {step === 2 && <Step2 />}
-                {step === 3 && <Step3 />}
-                {step === 4 && <Step4 />}
+          {/* App Wizard */}
+          {view === 'app' && (
+            <>
+              {/* Step Indicator */}
+              {step < 4 && (
+                <div className="flex items-center gap-0 mt-8 mb-4 sm:mb-6 shrink-0 mx-auto max-w-5xl">
+                  {[1, 2, 3].map((s, i) => (
+                    <React.Fragment key={s}>
+                      <button onClick={() => step > s && setStep(s)}
+                        className="flex flex-col items-center gap-1 px-3 py-1 transition-all"
+                        style={{ opacity: step >= s ? 1 : 0.35, cursor: step > s ? 'pointer' : 'default' }}>
+                        <div className="w-8 h-8 flex items-center justify-center font-mono text-sm"
+                          style={{
+                            borderRadius: '50%',
+                            border: step === s ? '2px solid var(--ochre)' : step > s ? '2px solid rgba(196,133,62,0.4)' : '2px solid rgba(232,213,183,0.1)',
+                            background: step === s ? 'rgba(196,133,62,0.15)' : 'transparent',
+                            color: step >= s ? 'var(--ochre)' : 'var(--sand-dim)',
+                            boxShadow: step === s ? '0 0 14px var(--ochre-glow)' : 'none',
+                          }}>
+                          {step > s ? '✓' : String(s)}
+                        </div>
+                        <span className="font-mono text-[10px] uppercase tracking-wider" style={{ color: step >= s ? 'var(--sand-dim)' : 'rgba(232,213,183,0.2)' }}>
+                          {s === 1 ? 'Identity' : s === 2 ? 'Lifestyle' : 'Review'}
+                        </span>
+                      </button>
+                      {s < 3 && (
+                        <div className="w-10 h-0.5 relative mx-1">
+                          <div className="absolute inset-0" style={{ background: 'rgba(232,213,183,0.08)' }} />
+                          <div className="absolute inset-0 origin-left transition-transform duration-500"
+                            style={{ background: 'var(--ochre)', transform: step > s ? 'scaleX(1)' : 'scaleX(0)', transitionTimingFunction: 'cubic-bezier(0.16,1,0.3,1)' }} />
+                        </div>
+                      )}
+                    </React.Fragment>
+                  ))}
+                </div>
+              )}
+
+              {/* Content */}
+              <div className="flex-1 min-h-0 overflow-y-auto">
+                <div className="min-h-full flex items-center justify-center">
+                  <div className={`w-full mx-auto ${step < 4 ? 'max-w-5xl' : 'max-w-7xl'}`}>
+                    {step === 1 && <Step1 />}
+                    {step === 2 && <Step2 />}
+                    {step === 3 && <Step3 />}
+                    {step === 4 && <Step4 />}
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
 
-          {/* Error */}
-          {error && (
-            <div className="mt-2 p-2 shrink-0" style={{ background: 'rgba(139,30,43,0.1)', borderLeft: '2px solid var(--crimson)', borderRadius: '0 2px 2px 0' }}>
-              <p className="font-body text-xs" style={{ color: '#c45a6b' }}>{error}</p>
-            </div>
-          )}
+              {/* Error */}
+              {error && (
+                <div className="mt-2 p-2 shrink-0" style={{ background: 'rgba(139,30,43,0.1)', borderLeft: '2px solid var(--crimson)', borderRadius: '0 2px 2px 0' }}>
+                  <p className="font-body text-xs" style={{ color: '#c45a6b' }}>{error}</p>
+                </div>
+              )}
 
-          {/* Navigation */}
-          {step < 3 && (
-            <div className="mt-auto pt-4 flex items-center justify-between shrink-0">
-              <Btn ghost onClick={() => setStep((s) => Math.max(1, s - 1))} disabled={step === 1}>← Back</Btn>
-              <Btn onClick={() => setStep((s) => s + 1)}>Continue →</Btn>
-            </div>
-          )}
-          {step === 4 && (
-            <div className="mt-auto pt-4 flex justify-end shrink-0">
-              <Btn ghost onClick={() => { setResult(null); setStep(1); }}>New Assessment →</Btn>
-            </div>
+              {/* Navigation */}
+              {step < 3 && (
+                <div className="mt-auto pt-4 flex items-center justify-between shrink-0">
+                  <Btn ghost onClick={() => setStep((s) => Math.max(1, s - 1))} disabled={step === 1}>← Back</Btn>
+                  <Btn onClick={() => setStep((s) => s + 1)}>Continue →</Btn>
+                </div>
+              )}
+              {step === 4 && (
+                <div className="mt-auto pt-4 flex justify-end shrink-0">
+                  <Btn ghost onClick={() => { setResult(null); setStep(1); }}>New Assessment →</Btn>
+                </div>
+              )}
+            </>
           )}
         </div>
       </main>
