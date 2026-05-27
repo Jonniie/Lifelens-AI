@@ -34,7 +34,7 @@ LifeLens AI is an end-to-end web application that predicts diabetes risk from pa
 
 ### Infrastructure
 - **Render** — backend hosting (`lifelens-ai-2it2.onrender.com`)
-- **GitHub Pages / Vercel** — static frontend (configured to proxy `/api` to Render in dev, direct URL in production)
+- **Vercel** — static frontend (configured to proxy `/api` to Render in dev, direct URL in production)
 
 ---
 
