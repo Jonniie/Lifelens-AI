@@ -123,26 +123,6 @@ Accepts 21 CDC BRFSS-style input features and returns risk assessment.
 
 ---
 
-## Derived Features (Engineered at Runtime)
-
-The backend computes 18 additional features from the 21 raw inputs:
-
-| Feature | Derivation |
-|---------|-----------|
-| `BMI_normalized` | `(BMI - 27) / 10` |
-| `Age_squared` | `Age²` |
-| `BMI_x_Age` | `BMI × Age` |
-| `is_Obese`, `is_Overweight`, `is_Severely_Obese` | Boolean BMI thresholds |
-| `comorbidity_count` | Sum of HighBP + HighChol + Stroke + HeartDisease |
-| `health_composite` | `GenHlth + (PhysHlth + MentHlth)/30` |
-| `socioeconomic_score` | `Education + Income` |
-| `lifestyle_score` | `PhysActivity + Fruits + Veggies - Smoker - HvyAlcoholConsump` |
-| `metabolic_risk` | `HighBP + HighChol + (BMI >= 30)` |
-| `access_score` | `AnyHealthcare - NoDocbcCost` |
-| ... | And 7 more domain-engineered interactions |
-
----
-
 ## Project Structure
 
 ```
