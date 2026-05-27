@@ -239,7 +239,7 @@ export default function App() {
         DiffWalk: form.DiffWalk, Sex: form.Sex, Age: form.Age,
         Education: form.Education, Income: form.Income,
       };
-      const res = await fetch('/api/predict', {
+      const res = await fetch('https://lifelens-ai-2it2.onrender.com/api/predict', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
