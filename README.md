@@ -8,16 +8,14 @@ LifeLens AI is an end-to-end web application that predicts diabetes risk from pa
 
 ## Features
 
-| Feature | Description |
-|--------|-------------|
-| **4-Step Wizard** | Identity → Lifestyle → Review → Results, with no-scroll compact layout |
-| **Real ML Inference** | `CalibratedClassifierCV(VotingClassifier)` with 39 engineered features (21 raw + 18 derived) |
-| **Risk Gauge** | SVG semicircular gauge with tick marks and animated needle |
-| **Lifestyle Grade** | A–F scoring based on BMI, habits, activity, diet, and healthcare access |
-| **Nigerian Context** | Local income tiers (₦), education levels (WAEC/NECO/OND/HND), food references (eba, ugwu, efo), and healthcare system (NHIS, General Hospital, Teaching Hospital) |
-| **Accessibility-First** | Large fonts (`text-sm`/`text-base`), high contrast earth palette, tooltips on every toggle explaining exact clinical meaning |
-| **PDF/PNG Export** | One-click download of results as a retina-quality PNG via `html2canvas` |
-| **Responsive** | Mobile-first Tailwind breakpoints (`sm:`, `md:`) for all form grids and results cards |
+- **4-Step Wizard** — Identity, Lifestyle, Review, Results
+- **Real ML Inference** — Calibrated ensemble (LightGBM + XGBoost + Logistic Regression)
+- **Risk Gauge** — Animated SVG gauge with live percentage
+- **Lifestyle Grade** — A–F score based on habits, diet, and activity
+- **Nigerian Context** — Local income tiers (₦), education levels, food references, and healthcare system terms
+- **Accessibility-First** — Large readable fonts, high-contrast palette, tooltips on every control
+- **Report Export** — One-click PNG download of the full results dashboard
+- **Responsive** — Mobile-first layout with Tailwind breakpoints
 
 ---
 
