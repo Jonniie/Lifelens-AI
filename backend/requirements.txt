@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+pydantic
+numpy
+joblib
+pandas
+scikit-learn
+lightgbm
+xgboost
+scipy
+threadpoolctl
+httpx
+gunicorn
