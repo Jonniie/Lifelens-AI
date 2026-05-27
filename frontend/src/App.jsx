@@ -365,11 +365,11 @@ export default function App() {
         <label className="font-mono text-xs uppercase tracking-wider" style={{ color: 'var(--ochre)' }}>Clinical Conditions</label>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
           <Toggle label="High BP" value={form.HighBP} onChange={(v) => upd('HighBP', v)} risk tooltip="Has a doctor told you your blood pressure is high?" />
-          <Toggle label="High Chol" value={form.HighChol} onChange={(v) => upd('HighChol', v)} risk tooltip="Has a doctor told you your cholesterol level is high?" />
+          <Toggle label="High Cholesterol" value={form.HighChol} onChange={(v) => upd('HighChol', v)} risk tooltip="Has a doctor told you your cholesterol level is high?" />
           <Toggle label="Stroke" value={form.Stroke} onChange={(v) => upd('Stroke', v)} risk tooltip="Have you ever had a stroke?" />
           <Toggle label="Heart Disease" value={form.HeartDiseaseorAttack} onChange={(v) => upd('HeartDiseaseorAttack', v)} risk tooltip="Have you had a heart attack or been told you have coronary heart disease?" />
           <Toggle label="Diff. Walking" value={form.DiffWalk} onChange={(v) => upd('DiffWalk', v)} risk tooltip="Do you have serious difficulty walking or climbing stairs?" />
-          <Toggle label="Chol Check" value={form.CholCheck} onChange={(v) => upd('CholCheck', v)} tooltip="Have you had your cholesterol checked in the past 5 years?" />
+          <Toggle label="Cholesterol Check" value={form.CholCheck} onChange={(v) => upd('CholCheck', v)} tooltip="Have you had your cholesterol checked in the past 5 years?" />
         </div>
       </div>
 
@@ -483,7 +483,7 @@ export default function App() {
           </div>
           <div className="mt-3 pt-3 border-t border-[rgba(232,213,183,0.06)] flex flex-wrap gap-x-3 gap-y-1 text-xs font-mono">
             {form.HighBP === 1 && <span style={{ color: 'var(--terracotta)' }}>● High BP</span>}
-            {form.HighChol === 1 && <span style={{ color: 'var(--terracotta)' }}>● High Chol</span>}
+            {form.HighChol === 1 && <span style={{ color: 'var(--terracotta)' }}>● High Cholesterol</span>}
             {form.Stroke === 1 && <span style={{ color: 'var(--terracotta)' }}>● Stroke</span>}
             {form.HeartDiseaseorAttack === 1 && <span style={{ color: 'var(--terracotta)' }}>● Heart Disease</span>}
             {form.DiffWalk === 1 && <span style={{ color: 'var(--terracotta)' }}>● Diff. Walk</span>}
