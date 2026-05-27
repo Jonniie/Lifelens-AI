@@ -663,7 +663,7 @@ export default function App() {
         <div className="max-w-7xl mx-auto w-full flex flex-col flex-1 min-h-0">
           {/* Step Indicator */}
           {step < 4 && (
-            <div className="flex items-center gap-0 mt-8 mb-0 shrink-0 mx-auto max-w-5xl">
+            <div className="flex items-center gap-0 mt-8 mb-4 sm:mb-6 shrink-0 mx-auto max-w-5xl">
               {[1, 2, 3].map((s, i) => (
                 <React.Fragment key={s}>
                   <button onClick={() => step > s && setStep(s)}
