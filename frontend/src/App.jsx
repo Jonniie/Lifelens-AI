@@ -743,6 +743,29 @@ export default function App() {
     );
   };
 
+  // ── Landing Page Animated Gauge ──
+  const [landingPct, setLandingPct] = useState(0);
+  const [landingTarget, setLandingTarget] = useState(0);
+
+  useEffect(() => {
+    if (view === 'landing') {
+      const target = Math.floor(Math.random() * 51) + 15;
+      setLandingTarget(target);
+      setLandingPct(0);
+      let start = null;
+      const duration = 1800;
+      const animate = (ts) => {
+        if (!start) start = ts;
+        const elapsed = ts - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        setLandingPct(eased * target);
+        if (progress < 1) requestAnimationFrame(animate);
+      };
+      requestAnimationFrame(animate);
+    }
+  }, [view]);
+
   // ── Landing Page ──
   const LandingPage = () => (
     <div className="flex-1 flex flex-col justify-center items-center text-center px-4 py-8 gap-6 max-w-4xl mx-auto">
@@ -758,7 +781,7 @@ export default function App() {
 
       {/* Gauge Preview */}
       <div className="flex flex-col items-center gap-2">
-        <Gauge pct={50} color={'var(--ochre)'} />
+        <Gauge pct={landingPct} color={'var(--ochre)'} />
         <span className="font-mono text-xs uppercase tracking-wider" style={{ color: 'var(--sand-dim)' }}>Sample Risk Output</span>
       </div>
 
