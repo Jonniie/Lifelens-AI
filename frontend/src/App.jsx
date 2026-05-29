@@ -37,18 +37,18 @@ const HEALTH_RATINGS = [
 ];
 
 const TIER_META = {
-  'Very Low':  { color: '#4a7c59', word: 'Minimal' },
-  'Low':       { color: '#5a9e6d', word: 'Low' },
-  'Moderate':  { color: '#c4853e', word: 'Moderate' },
-  'High':      { color: '#b84a2f', word: 'High' },
+  'Very Low': { color: '#4a7c59', word: 'Minimal' },
+  'Low': { color: '#5a9e6d', word: 'Low' },
+  'Moderate': { color: '#c4853e', word: 'Moderate' },
+  'High': { color: '#b84a2f', word: 'High' },
   'Very High': { color: '#8b1e2b', word: 'Critical' },
 };
 
 const TONE_CSS = {
-  palm:       { border: '#4a7c59', bg: 'rgba(74,124,89,0.12)', text: '#5a9e6d' },
-  gold:       { border: '#c4853e', bg: 'rgba(196,133,62,0.12)', text: '#d4a843' },
-  terracotta: { border: '#b84a2f', bg: 'rgba(184,74,47,0.10)',   text: '#c85a3f' },
-  crimson:    { border: '#8b1e2b', bg: 'rgba(139,30,43,0.10)',   text: '#a03a4a' },
+  palm: { border: '#4a7c59', bg: 'rgba(74,124,89,0.12)', text: '#5a9e6d' },
+  gold: { border: '#c4853e', bg: 'rgba(196,133,62,0.12)', text: '#d4a843' },
+  terracotta: { border: '#b84a2f', bg: 'rgba(184,74,47,0.10)', text: '#c85a3f' },
+  crimson: { border: '#8b1e2b', bg: 'rgba(139,30,43,0.10)', text: '#a03a4a' },
 };
 
 // ── Gauge ──
@@ -282,10 +282,23 @@ export default function App() {
 
   const downloadReport = useCallback(async () => {
     if (!resultsRef.current) return;
-    const canvas = await html2canvas(resultsRef.current, {
+    const el = resultsRef.current;
+    const canvas = await html2canvas(el, {
       backgroundColor: '#1a1209',
       scale: 2,
       useCORS: true,
+      logging: false,
+      allowTaint: false,
+      width: el.scrollWidth,
+      height: el.scrollHeight,
+      windowWidth: el.scrollWidth,
+      windowHeight: el.scrollHeight,
+      onclone: (doc) => {
+        const clone = doc.querySelector('[data-results-root]');
+        if (clone) {
+          clone.style.width = `${el.scrollWidth}px`;
+        }
+      },
     });
     const link = document.createElement('a');
     link.download = `LifeLens_Report_${new Date().toISOString().slice(0, 10)}.png`;
@@ -525,7 +538,7 @@ export default function App() {
     const medRecs = result.recommendations.filter((r) => r.priority === 'medium');
 
     return (
-      <div ref={resultsRef} className="grid grid-cols-1 md:grid-cols-12 gap-3">
+      <div ref={resultsRef} data-results-root className="grid grid-cols-1 md:grid-cols-12 gap-3">
         {/* Left: Gauge + Grade + Snapshot */}
         <div className="md:col-span-4 flex flex-col gap-2">
           <Card className="flex items-center gap-3">
@@ -540,9 +553,9 @@ export default function App() {
             <div className="font-mono text-5xl font-medium shrink-0"
               style={{
                 color: result.lifestyle.grade === 'A' ? 'var(--palm)' :
-                       result.lifestyle.grade === 'F' ? 'var(--crimson)' : 'var(--gold)',
+                  result.lifestyle.grade === 'F' ? 'var(--crimson)' : 'var(--gold)',
                 textShadow: result.lifestyle.grade === 'A' ? '0 0 20px var(--palm-glow)' :
-                            result.lifestyle.grade === 'F' ? '0 0 20px var(--crimson-glow)' : 'none',
+                  result.lifestyle.grade === 'F' ? '0 0 20px var(--crimson-glow)' : 'none',
               }}>
               {result.lifestyle.grade}
             </div>
@@ -588,7 +601,7 @@ export default function App() {
             <button onClick={downloadReport} className="font-mono text-sm uppercase px-4 py-2 rounded-sm transition-all flex items-center gap-2 shrink-0"
               style={{ background: 'var(--ochre)', color: 'var(--earth-deep)', border: '1px solid var(--ochre)' }}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
               </svg>
               Save Report
             </button>
