@@ -1,5 +1,4 @@
-import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react';
-import html2canvas from 'html2canvas';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 
 // ── Data ──
 const AGE_GROUPS = [
@@ -281,35 +280,132 @@ export default function App() {
   const resultsRef = useRef(null);
 
   const downloadReport = useCallback(async () => {
-    if (!resultsRef.current) return;
-    await document.fonts.ready;
-    const el = resultsRef.current;
-    const canvas = await html2canvas(el, {
-      backgroundColor: '#1a1209',
-      scale: 2,
-      useCORS: true,
-      logging: false,
-      allowTaint: false,
-      width: el.scrollWidth,
-      height: el.scrollHeight,
-      windowWidth: el.scrollWidth,
-      windowHeight: el.scrollHeight,
-      onclone: (doc) => {
-        const link = doc.createElement('link');
-        link.href = 'https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap';
-        link.rel = 'stylesheet';
-        doc.head.appendChild(link);
-        const clone = doc.querySelector('[data-results-root]');
-        if (clone) {
-          clone.style.width = `${el.scrollWidth}px`;
-        }
-      },
-    });
-    const link = document.createElement('a');
-    link.download = `LifeLens_Report_${new Date().toISOString().slice(0, 10)}.png`;
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-  }, []);
+    if (!result) return;
+    const meta = TIER_META[result.tier] || TIER_META['Moderate'];
+    const ageLabel = AGE_GROUPS.find(a => a.value === form.Age)?.label || '';
+    const eduLabel = EDU_LEVELS.find(e => e.value === form.Education)?.label || '';
+    const incLabel = INCOME_LEVELS.find(i => i.value === form.Income)?.label || '';
+    const healthLabel = HEALTH_RATINGS.find(h => h.value === form.GenHlth)?.label || '';
+    const now = new Date().toLocaleString('en-NG', { dateStyle: 'long', timeStyle: 'short' });
+
+    const highRecs = result.recommendations.filter((r) => r.priority === 'high');
+    const medRecs = result.recommendations.filter((r) => r.priority === 'medium');
+
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
+    const doc = iframe.contentWindow.document;
+    const w = iframe.contentWindow;
+
+    doc.write(`
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,600;0,700;1,400&family=Atkinson+Hyperlegible:wght@400;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #fff; color: #1a1a1a; font-family: 'Atkinson Hyperlegible', sans-serif; padding: 28px; font-size: 11px; line-height: 1.5; }
+    h1 { font-family: 'Newsreader', serif; font-size: 20px; color: #1a1a1a; margin-bottom: 2px; }
+    .sub { font-size: 10px; color: #888; margin-bottom: 14px; }
+    .grid { display: flex; gap: 20px; }
+    .col { flex: 1; min-width: 0; }
+    .section { font-family: 'Newsreader', serif; font-size: 12px; font-weight: 600; color: #b07a3a; margin: 12px 0 6px; border-bottom: 1px solid #eee; padding-bottom: 3px; }
+    .row { display: flex; justify-content: space-between; padding: 2px 0; }
+    .label { color: #888; }
+    .val { font-family: 'IBM Plex Mono', monospace; font-weight: 600; }
+    .tier-box { background: #f5f0e8; border-left: 4px solid #c4853e; padding: 10px 14px; margin-bottom: 10px; border-radius: 4px; }
+    .tier-box h2 { font-family: 'Newsreader', serif; font-size: 16px; }
+    .tier-box p { color: #555; font-size: 11px; }
+    .rec { border: 1px solid #e0d8cc; border-radius: 4px; padding: 8px 10px; margin: 4px 0; }
+    .rec-high { border-left: 3px solid #b84a2f; }
+    .rec-med { border-left: 3px solid #c4853e; }
+    .rec .badge { font-size: 9px; font-weight: 700; text-transform: uppercase; padding: 1px 6px; border-radius: 3px; margin-right: 6px; }
+    .rec .badge-high { background: #fce8e4; color: #b84a2f; }
+    .rec .badge-med { background: #fef3e0; color: #c4853e; }
+    .rec h3 { font-family: 'Newsreader', serif; font-size: 12px; margin: 2px 0; }
+    .rec p { color: #555; font-size: 10px; }
+    .rec .cite { color: #999; font-style: italic; font-size: 9px; margin-top: 3px; border-left: 2px solid #ddd; padding-left: 8px; }
+    .badges { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+    .badges span { font-size: 9px; background: #f0f0f0; padding: 1px 6px; border-radius: 3px; font-family: 'IBM Plex Mono', monospace; }
+    .footer { margin-top: 16px; padding-top: 8px; border-top: 1px solid #ddd; font-size: 8px; color: #bbb; text-align: center; }
+    @media print { body { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <h1>LifeLens AI</h1>
+  <div class="sub">Diabetes Risk Screening Report &nbsp;·&nbsp; ${now}</div>
+
+  <div class="tier-box" style="border-left-color: ${meta.color}; background: ${meta.color}10;">
+    <h2 style="color: ${meta.color};">${result.tier} Risk</h2>
+    <p>${result.risk_percentage.toFixed(1)}% probability — ${result.action}</p>
+  </div>
+
+  <div class="grid">
+    <div class="col">
+      <div class="section">Lifestyle</div>
+      <div class="row"><span class="label">Grade</span><span class="val" style="color: ${result.lifestyle.grade === 'A' ? '#4a7c59' : result.lifestyle.grade === 'F' ? '#b84a2f' : '#c4853e'}; font-size: 18px;">${result.lifestyle.grade}</span></div>
+      <div class="row"><span class="label">Score</span><span class="val">${result.lifestyle.score} / 100</span></div>
+
+      <div class="section">Clinical Snapshot</div>
+      <div class="row"><span class="label">Comorbidity Score</span><span class="val">${result.feature_vector[25]}</span></div>
+      <div class="row"><span class="label">BMI Class</span><span class="val">${result.feature_vector[24] ? 'Severely Obese' : result.feature_vector[21] ? 'Obese' : result.feature_vector[22] ? 'Overweight' : 'Normal'}</span></div>
+      <div class="row"><span class="label">Metabolic Syndrome</span><span class="val">${result.feature_vector[28] ? 'Detected' : 'None'}</span></div>
+      <div class="row"><span class="label">Healthcare Gap</span><span class="val">${result.feature_vector[37] ? 'Present' : 'None'}</span></div>
+      <div class="row"><span class="label">Risk Index</span><span class="val">${result.feature_vector[36]}</span></div>
+    </div>
+
+    <div class="col">
+      <div class="section">Patient Profile</div>
+      <div class="row"><span class="label">Sex</span><span class="val">${form.Sex === 0 ? 'Female' : 'Male'}</span></div>
+      <div class="row"><span class="label">Age</span><span class="val">${ageLabel}</span></div>
+      <div class="row"><span class="label">BMI</span><span class="val">${bmi.toFixed(1)}</span></div>
+      <div class="row"><span class="label">Height</span><span class="val">${form.HeightFt} ft ${form.HeightIn} in</span></div>
+      <div class="row"><span class="label">Weight</span><span class="val">${Math.round(form.WeightKg)} kg</span></div>
+      <div class="row"><span class="label">Health</span><span class="val">${healthLabel}</span></div>
+      <div class="row"><span class="label">Education</span><span class="val">${eduLabel}</span></div>
+      <div class="row"><span class="label">Income</span><span class="val">${incLabel}</span></div>
+
+      <div class="badges">
+        ${form.HighBP === 1 ? '<span>High BP</span>' : ''}
+        ${form.HighChol === 1 ? '<span>High Chol</span>' : ''}
+        ${form.Stroke === 1 ? '<span>Stroke</span>' : ''}
+        ${form.HeartDiseaseorAttack === 1 ? '<span>Heart Disease</span>' : ''}
+        ${form.DiffWalk === 1 ? '<span>Diff. Walk</span>' : ''}
+        ${form.Smoker === 1 ? '<span>Smoker</span>' : ''}
+        ${form.HvyAlcoholConsump === 1 ? '<span>Heavy Drink</span>' : ''}
+        ${form.NoDocbcCost === 1 ? '<span>Skipped Care</span>' : ''}
+        ${form.PhysActivity === 1 ? '<span>Active</span>' : ''}
+        ${form.Fruits === 1 ? '<span>Fruits</span>' : ''}
+        ${form.Veggies === 1 ? '<span>Veggies</span>' : ''}
+        ${form.AnyHealthcare === 1 ? '<span>Insurance</span>' : ''}
+      </div>
+    </div>
+  </div>
+
+  ${result.recommendations.length > 0 ? `<div class="section" style="margin-top: 8px;">Interventions — ${result.recommendations.length} flagged</div>
+    ${[...highRecs, ...medRecs].map(r => `
+      <div class="rec ${r.priority === 'high' ? 'rec-high' : 'rec-med'}">
+        <div><span class="badge ${r.priority === 'high' ? 'badge-high' : 'badge-med'}">${r.priority}</span><span style="color: #888; font-size: 10px;">${r.category}</span></div>
+        <h3>${r.title}</h3>
+        <p>${r.text}</p>
+        ${r.evidence ? `<div class="cite">${r.evidence}</div>` : ''}
+      </div>
+    `).join('')}` : '<div style="color: #4a7c59; margin-top: 10px;">No interventions flagged</div>'}
+
+  <div class="footer">This report is generated by LifeLens AI and is not a substitute for professional medical advice. Consult a physician.</div>
+</body>
+</html>
+`);
+    doc.close();
+
+    // Wait for fonts to render, then print
+    w.focus();
+    await new Promise(r => setTimeout(r, 500));
+    try { w.print(); } catch(e) {}
+    setTimeout(() => document.body.removeChild(iframe), 1000);
+  }, [result, form, bmi]);
 
   // ── Step 1: Identity & Body ──
   const Step1 = () => (
