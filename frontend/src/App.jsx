@@ -282,6 +282,7 @@ export default function App() {
 
   const downloadReport = useCallback(async () => {
     if (!resultsRef.current) return;
+    await document.fonts.ready;
     const el = resultsRef.current;
     const canvas = await html2canvas(el, {
       backgroundColor: '#1a1209',
@@ -294,6 +295,10 @@ export default function App() {
       windowWidth: el.scrollWidth,
       windowHeight: el.scrollHeight,
       onclone: (doc) => {
+        const link = doc.createElement('link');
+        link.href = 'https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap';
+        link.rel = 'stylesheet';
+        doc.head.appendChild(link);
         const clone = doc.querySelector('[data-results-root]');
         if (clone) {
           clone.style.width = `${el.scrollWidth}px`;
